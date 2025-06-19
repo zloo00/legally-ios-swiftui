@@ -29,20 +29,31 @@ struct RegisterView: View {
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(10)
 
+            // Отображение ошибок
             if !viewModel.errorMessage.isEmpty {
                 Text(viewModel.errorMessage)
                     .foregroundColor(.red)
+                    .multilineTextAlignment(.center)
             }
 
             Button(action: {
+                viewModel.isLoading = true
+                viewModel.errorMessage = ""
+
                 viewModel.register { result in
-                    if case .success = result {
+                    viewModel.isLoading = false
+                    switch result {
+                    case .success:
                         dismiss()
+                    case .failure(let error):
+                        viewModel.errorMessage = error.localizedDescription
                     }
                 }
             }) {
                 if viewModel.isLoading {
                     ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .padding()
                 } else {
                     Text("Создать аккаунт")
                         .bold()

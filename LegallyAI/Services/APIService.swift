@@ -10,7 +10,7 @@ class APIService {
     static let shared = APIService()
     private init() {}
 
-    private let baseURL = "https://d371-2a0d-b201-1081-82df-6408-f971-7425-bd73.ngrok-free.app"
+    private let baseURL = "https://df0c-2a0d-b201-1081-82df-6408-f971-7425-bd73.ngrok-free.app"
 
     // MARK: - Login
     func login(email: String, password: String, completion: @escaping (Result<String, Error>) -> Void) {
@@ -80,9 +80,12 @@ class APIService {
 
                 if httpResponse.statusCode == 201 {
                     completion(.success(()))
+                } else if httpResponse.statusCode == 409 {
+                    completion(.failure(APIError.custom("Пользователь с таким email уже существует")))
                 } else {
                     completion(.failure(APIError.custom("Ошибка регистрации")))
                 }
+
             }
         }.resume()
     }
